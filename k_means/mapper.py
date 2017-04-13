@@ -1,32 +1,49 @@
-import pickle, sys, numpy as np, math
+import pickle, sys, math, os
+import scipy.sparse as sparse, scipy.sparse.linalg as linalg
+import time
 
-data = pickle.load(sys.stdin.buffer)
+start = time.time()
 
-centroids = np.array(data['centroids'])
-points = np.array(data['points'])
+def load_clusters():
+	clusters = []
+	path = "clustering-labeling/k_means/"
+	for f in os.listdir(path):
+		if f.endswith(".out"):
+			with open(path + f, "rb") as c:
+				while True:
+					try:
+						clusters.append(pickle.load(c))
+					except EOFError:
+						break
+	clusters.sort(key=lambda x:x[0])
+	return [x[1] for x in clusters]
 
-updated_centroids = np.append(np.zeros_like(centroids), np.zeros((centroids.shape[0], 1)), axis=1)
+centroids = load_clusters()
+points = pickle.load(sys.stdin.buffer)
+
+centroid_points = [[sparse.csr_matrix((1, centroids[0].shape[1])), 0]] * len(centroids)
 
 def distance(a, b):
-	return np.linalg.norm(a - b)
+	return linalg.norm(a - b)
 
 def get_nearest_centroid_id(p):
 	min_distance = math.inf
 	centroid_ID = -1
-	for idx in range(centroids.shape[0]):
-		if distance(centroids[idx], p) < min_distance:
-			min_distance = distance(centroids[idx], p)
+	for idx, centroid in enumerate(centroids):
+		if distance(centroid, p) < min_distance:
+			min_distance = distance(centroid, p)
 			centroid_ID = idx
 
 	return idx
 
-def extend_point(p):
-	return np.append(p, 1)
-
-for p in points.shape[0]:
+for p in range(points.shape[0]):
 	centroid_ID = get_nearest_centroid_id(points[p])
-	new_p = extend_point(points[p])
-	updated_centroids[centroid_ID] += new_p
+	centroid_points[centroid_ID][0] += points[p]
+	centroid_points[centroid_ID][1] += 1
 
-for idx in range(updated_centroids.shape[0]):
-	pickle.dump((idx, updated_centroids[idx]), sys.stdout.buffer)
+print("Finished calculation! {}".format(time.time() - start), file=sys.stderr)
+
+for idx in range(len(centroid_points)):
+	pickle.dump((idx, centroid_points[idx]), sys.stdout.buffer)
+
+print("Script End! {}".format(time.time() - start), file=sys.stderr)

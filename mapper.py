@@ -4,7 +4,7 @@ Mappers
 Handles the map request
 '''
 from tornado import web, gen
-import json, subprocess, io, pickle, hashlib, random
+import json, subprocess, io, pickle, hashlib, random, os
 
 class Map(web.RequestHandler):
 	def initialize(self, database):
@@ -49,7 +49,7 @@ class Map(web.RequestHandler):
 	def _emit_data(self):
 		self._status = False
 
-		p = subprocess.Popen(self._mapper_path, 
+		p = subprocess.Popen(["python", self._mapper_path], 
 			stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 		(out, _) = p.communicate(open(self._input_file, "rb").read())
 

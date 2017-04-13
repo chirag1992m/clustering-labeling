@@ -38,7 +38,7 @@ class Reduce(web.RequestHandler):
 		for p in kv_pairs:
 			pickle.dump(p, kv_buffer)
 		(out, _) = subprocess.Popen(
-			self._reducer_path, 
+			["python", self._reducer_path], 
 			stdin=subprocess.PIPE, 
 			stdout=subprocess.PIPE).communicate(
 				kv_buffer.getvalue())

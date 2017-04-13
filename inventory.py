@@ -5,7 +5,7 @@ Constants for different components
 '''
 import hashlib, getpass
 
-NUM_WORKERS = 4
+NUM_WORKERS = 20
 
 MAX_PORT = 50000
 MIN_PORT = 10000
