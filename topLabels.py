@@ -2,7 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import math
 import pickle
+import operator
 
+K=5
 
 def getCount(word):
     r = requests.get('http://www.google.com/search', params={'q':'"' + word + '"', "tbs":"li:1"})
@@ -30,8 +32,12 @@ def MI(impt_input, candt_input, output_file):
                 pmi = math.log((combined_count / label_count) / term_count, 10)
                 mi[label] += (pmi * scores[term])
 
+    mi = sorted(mi.items(), key=operator.itemgetter(1))
+    topk = mi[:K]
+    labels = [label[0] for label in topk]
+
     with open(output_file, "wb") as f:
-        pickle.dump(mi, f)
+        pickle.dump(labels, f)
 
 
 def SP(candt_input, output_file):

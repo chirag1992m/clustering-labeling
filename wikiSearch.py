@@ -1,16 +1,15 @@
 import wikipedia
+import pickle
+
+
 '''
 TODO: Only the first title of the term was taken into consideration.
 All titles used currently.
 All categories of the page are added.
 '''
-
-
 def extractLabels(input_file, output_file):
-    imp_terms = []
     with open(input_file) as f:
-        for line in f:
-            imp_terms.append(line.strip())
+        imp_terms = pickle.load(f)
     f = open(output_file, "wb")
     for term in imp_terms:
         new_terms = []
