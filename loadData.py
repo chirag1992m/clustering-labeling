@@ -53,8 +53,8 @@ def text_vector(textdata):
 	return vec
 
 
-def add_file(filepath, label, idx):
-	doc_labeling.append(label)
+def add_file(filepath, idx):
+	doc_labeling.append(filepath)
 	with open(filepath, 'rb') as f:
 		textdata = "".join(str(f.read()).split())
 		tv = text_vector(textdata)
@@ -69,8 +69,7 @@ def add_file(filepath, label, idx):
 def gen_indexes(files):
 	global doc_count
 	for f in files:
-		label = os.path.basename(os.path.dirname(f))
-		add_file(f, label, doc_count)
+		add_file(f, doc_count)
 		doc_count += 1
 
 	for word in TF.keys():
