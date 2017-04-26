@@ -14,15 +14,18 @@ def getCount(word):
 
 def MI(impt_input, candt_input, output_file):
     with open(impt_input) as f:
-        imp_terms = pickle.load(f)
-        scores = pickle.load(f)
+        terms = pickle.load(f)
+
+    imp_terms = [term[0] for term in terms]
+    scores = [term[1] for term in terms]
 
     scores = [float(i) / max(scores) for i in scores]
 
     mi = {}
     with open(candt_input) as f:
-        for line in f:
-            label = line.strip()
+        with open(candt_input) as f:
+            terms = pickle.load(f)
+        for label in terms:
             mi[label] = 0
             for term in imp_terms:
                 search_query = label + " " + term
@@ -43,7 +46,7 @@ def MI(impt_input, candt_input, output_file):
 def SP(candt_input, output_file):
     with open(candt_input) as f:
         cand_terms = pickle.load(f)
-        scores = pickle.loda(f)
+        scores = pickle.load(f)
 
     label_set = set.union(*map(set, cand_terms))
     ind_list = {}
