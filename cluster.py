@@ -6,8 +6,9 @@ File: cluster.py
 Job: Contains clustering methods
 '''
 import pickle
-from sklearn import cluster
+from sklearn import cluster, preprocessing
 from scipy import sparse
+from collections import Counter
 
 indexes = pickle.load(open('indexes.pkl', 'rb'))
 
@@ -25,7 +26,10 @@ for idx, word in enumerate(indexes['tf'].keys()):
         data.append(indexes['tf'][word][doc] * idf)
 
 X = sparse.coo_matrix((data, (rows, columns)), shape=(doc_count, vocab_count))
+X = preprocessing.normalize(X, norm='l2', copy=False)
 
-kmeans = cluster.KMeans(n_clusters=6, verbose=1, tol=1e-10).fit(X)
+kmeans = cluster.KMeans(n_clusters=7, verbose=1, random_state=42).fit(X)
+
+print(Counter(kmeans.labels_))
 
 pickle.dump(kmeans, open('cluster.pkl', 'wb'))

@@ -7,19 +7,22 @@ Job: Load the required dataset from internet and generate
 their TF-IDF indexes
 '''
 from urllib.request import urlopen
-import tarfile, os, shutil, pickle
+import tarfile, os, shutil, pickle, re
 from scipy import sparse
 import string, nltk
 from math import log
+from bs4 import BeautifulSoup
 
 TF = {}
 IDF = {}
 doc_count = 0
 doc_labeling = []
+all_text = []
 
 
 punctuation = string.punctuation
 stop_words = nltk.corpus.stopwords.words('english')
+UGLY_TEXT_MAP = dict([(ord(char), None) for char in '[]{}'] + [(ord(char), ' ') for char in '|=*\\#'])
 
 link = 'http://qwone.com/~jason/20Newsgroups/20news-bydate.tar.gz'
 
@@ -46,25 +49,39 @@ def all_files(path):
 
 	return fl
 
+
+def clean_text(text):
+	text = re.sub(r'\{\{.*?\}\}', '', text, flags=re.S)
+	text = re.sub(r'<ref>.*?</ref>', '', text, flags=re.S)
+	text = re.sub(r'\[\[File:.*?\|.*?\|.*?\|(.*?)\]\]', r'\1', text, flags=re.S)
+	text = BeautifulSoup(text, 'lxml').get_text()
+	text = text.translate(UGLY_TEXT_MAP)
+	text = text.replace("'''", '"').replace("''", '"')
+	text = text.strip()
+	return text
+
 def text_vector(textdata):
-	vec = nltk.word_tokenize(textdata)
+	textdata = clean_text(textdata)
+	vec = [word.lower() for word in nltk.word_tokenize(textdata)]
 	vec = [i.strip("".join(punctuation)) for i in vec]
-	vec = [i for i in vec if i not in stop_words]
+	vec = [i for i in vec if i and i not in stop_words]
 	return vec
 
 
 def add_file(filepath, idx):
 	doc_labeling.append(filepath)
 	with open(filepath, 'rb') as f:
-		textdata = "".join(str(f.read()).split())
+		textdata = f.read().decode('latin-1')
+		all_text.append(textdata)
 		tv = text_vector(textdata)
 
+		total_len = float(len(tv)) #Normalizing text length
 		for word in tv:
 			if word not in TF:
 				TF[word] = {}
 			if idx not in TF[word]:
 				TF[word][idx] = 0
-			TF[word][idx] += 1
+			TF[word][idx] += 1/total_len
 
 def gen_indexes(files):
 	global doc_count
@@ -81,6 +98,7 @@ files = all_files('temp_data')
 gen_indexes(files)
 
 pickle.dump({'tf': TF, 'idf': IDF, 'labels': doc_labeling, 'doc_count': doc_count}, open('indexes.pkl', 'wb'))
+pickle.dump(all_text, open('all_text.pkl', 'wb'))
 
 if os.path.exists('temp_data/'):
 	shutil.rmtree('temp_data/')
