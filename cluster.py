@@ -28,7 +28,7 @@ for idx, word in enumerate(indexes['tf'].keys()):
 X = sparse.coo_matrix((data, (rows, columns)), shape=(doc_count, vocab_count))
 X = preprocessing.normalize(X, norm='l2', copy=False)
 
-kmeans = cluster.KMeans(n_clusters=7, verbose=1, random_state=42).fit(X)
+kmeans = cluster.KMeans(n_clusters=inventory.NUM_CLUSTERS, verbose=1, random_state=42).fit(X)
 
 print(Counter(kmeans.labels_))
 
