@@ -38,3 +38,5 @@ one of the runs: Counter({4: 6773, 0: 5670, 6: 1588, 5: 1522, 3: 1476, 2: 1046, 
 Really depends on the initialization then! :(
 
 without normalized TF: Counter({2: 10655, 3: 2570, 4: 2042, 5: 1546, 1: 1145, 6: 634, 0: 254})
+
+Scraping google.
