@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 import math
 import pickle
 import operator
+import inventory
 
-K=5
 
 def getCount(word):
     r = requests.get('http://www.google.com/search', params={'q':'"' + word + '"', "tbs":"li:1"})
@@ -36,7 +36,7 @@ def MI(impt_input, candt_input, output_file):
                 mi[label] += (pmi * scores[term])
 
     mi = sorted(mi.items(), key=operator.itemgetter(1))
-    topk = mi[:K]
+    topk = mi[:inventory.K]
     labels = [label[0] for label in topk]
 
     with open(output_file, "wb") as f:
@@ -46,9 +46,12 @@ def MI(impt_input, candt_input, output_file):
 def SP(candt_input, output_file):
     with open(candt_input) as f:
         cand_terms = pickle.load(f)
-        scores = pickle.load(f)
 
-    label_set = set.union(*map(set, cand_terms))
+    label_set = set()
+    for term_list in candt_input:
+        for term in term_list:
+            label_set.add(term[0])
+
     ind_list = {}
     sp = {}
     for term in label_set:
@@ -56,10 +59,13 @@ def SP(candt_input, output_file):
         sp[term] = 0
 
     total_docs = []
+    scores = []
     for index, term_list in enumerate(cand_terms):
         total_docs.append(len(term_list))
+        scores.append(term_list[0][1])
         for term in term_list:
-            ind_list[term].append(index)
+            ind_list[term[0]].append(index)
+
 
     w = {}
     for term in label_set:
@@ -81,8 +87,8 @@ def SP(candt_input, output_file):
         for kword in kwords:
             sp[term] += kw[kword]
 
-    mi = sorted(sp.items(), key=operator.itemgetter(1))
-    topk = sp[:K]
+    sp = sorted(sp.items(), key=operator.itemgetter(1))
+    topk = sp[:inventroy.K]
     labels = [label[0] for label in topk]
     with open(output_file, "wb") as f:
         pickle.dump(labels, f)
