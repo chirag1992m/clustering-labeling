@@ -50,8 +50,10 @@ def SP(candt_input, output_file):
 
     label_set = set.union(*map(set, cand_terms))
     ind_list = {}
+    sp = {}
     for term in label_set:
         ind_list[term] = []
+        sp[term] = 0
 
     total_docs = []
     for index, term_list in enumerate(cand_terms):
@@ -64,4 +66,24 @@ def SP(candt_input, output_file):
         w[term] = 0
         for ind in ind_list[term]:
             w[term] += (scores[ind] / total_docs[ind])
+
+    kw = {}
+    for term in label_set:
+        kwords = term.split()
+        for kword in kwords:
+            if kword in kw:
+                kw[kword] += w[term]
+            else:
+                kw[kword] = 0
+
+    for term in label_set:
+        kwords = term.split()
+        for kword in kwords:
+            sp[term] += kw[kword]
+
+    mi = sorted(sp.items(), key=operator.itemgetter(1))
+    topk = sp[:K]
+    labels = [label[0] for label in topk]
+    with open(output_file, "wb") as f:
+        pickle.dump(labels, f)
 
