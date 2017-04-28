@@ -17,7 +17,10 @@ def extractLabels(input_terms):
                 doc_page = wikipedia.page(doc)
                 title = doc_page.title
                 categories = doc_page.categories
-                labels = [(title, calc_score(idx))]
+                if len(title.split()) < 4:
+                    labels = [(title, calc_score(idx))]
+                else:
+                    labels = []
                 labels.extend([(cat, calc_score(idx)) for cat in categories if len(cat.split()) < 4])
                 output_terms.append(labels)
             # check this error
