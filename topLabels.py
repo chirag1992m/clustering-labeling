@@ -1,5 +1,3 @@
-import requests
-from bs4 import BeautifulSoup
 import math
 import pickle
 import operator
@@ -23,18 +21,19 @@ def MI(impt_input, candt_input, output_file):
 
     mi = {}
     with open(candt_input) as f:
-        terms = pickle.load(f)
-        for label in terms:
-            mi[label] = 0
-            for term in imp_terms:
-                search_query = label + " " + term
-                combined_count = getCount(search_query)
-                label_count = getCount(label)
-                term_count = getCount(term)
-                pmi = math.log((combined_count / label_count) / term_count, 10)
-                mi[label] += (pmi * scores[term])
+        termlist = pickle.load(f)
+        for terms in termlist:
+            for label in terms:
+                mi[label[0]] = 0
+                for term in imp_terms:
+                    search_query = label[0] + " " + term
+                    combined_count = getCount(search_query)
+                    label_count = getCount(label[0])
+                    term_count = getCount(term)
+                    pmi = math.log((combined_count / label_count) / term_count, 10)
+                    mi[label[0]] += (pmi * scores[term])
 
-    mi = sorted(mi.items(), key=operator.itemgetter(1))
+    mi = sorted(mi.items(), key=operator.itemgetter(1), reverse=True)
     topk = mi[:inventory.K]
     labels = [label[0] for label in topk]
 
