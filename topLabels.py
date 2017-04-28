@@ -5,11 +5,11 @@ import pickle
 import operator
 import inventory
 
+ngrams = pickle.load(open('ngrams_brown.pkl', 'rb'))
 
 def getCount(word):
-    r = requests.get('http://www.google.com/search', params={'q':'"' + word + '"', "tbs":"li:1"})
-    soup = BeautifulSoup(r.text)
-    return int(soup.find('div',{'id':'resultStats'}).text)
+    gram = len(word.split())
+    return ngrams[gram][word]
 
 
 def MI(impt_input, candt_input, output_file):
@@ -23,8 +23,7 @@ def MI(impt_input, candt_input, output_file):
 
     mi = {}
     with open(candt_input) as f:
-        with open(candt_input) as f:
-            terms = pickle.load(f)
+        terms = pickle.load(f)
         for label in terms:
             mi[label] = 0
             for term in imp_terms:
