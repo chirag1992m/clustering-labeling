@@ -7,31 +7,31 @@ ngrams = pickle.load(open('ngrams_brown.pkl', 'rb'))
 
 def getCount(word):
     gram = len(word.split())
-    return ngrams[gram][word]
+    if word in ngrams[gram]:
+        return ngrams[gram][word]
+    else:
+        return 1.1
 
 
-def MI(impt_input, candt_input, output_file):
-    with open(impt_input) as f:
-        terms = pickle.load(f)
-
+def MI(terms, candt_input, output_file):
     imp_terms = [term[0] for term in terms]
     scores = [term[1] for term in terms]
 
     scores = [float(i) / max(scores) for i in scores]
 
     mi = {}
-    with open(candt_input) as f:
+    with open(candt_input, 'rb') as f:
         termlist = pickle.load(f)
         for terms in termlist:
             for label in terms:
                 mi[label[0]] = 0
-                for term in imp_terms:
+                for idx, term in enumerate(imp_terms):
                     search_query = label[0] + " " + term
                     combined_count = getCount(search_query)
                     label_count = getCount(label[0])
                     term_count = getCount(term)
                     pmi = math.log((combined_count / label_count) / term_count, 10)
-                    mi[label[0]] += (pmi * scores[term])
+                    mi[label[0]] += (pmi * scores[idx])
 
     mi = sorted(mi.items(), key=operator.itemgetter(1), reverse=True)
     topk = mi[:inventory.K]
@@ -93,4 +93,4 @@ def SP(candt_input, output_file):
 
 if __name__ == "__main__":
     for i in range(inventory.NUM_CLUSTERS):
-        SP('labels_words_{}.pkl'.format(i), 'topK_SP_{}.pkl'.format(i))
+        MI(pickle.load(open('important_words.pkl', 'rb'))[i], 'labels_words_{}.pkl'.format(i), 'topK_MI_{}.pkl'.format(i))

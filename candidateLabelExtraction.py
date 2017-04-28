@@ -64,6 +64,6 @@ important_words = [None] * inventory.NUM_CLUSTERS
 for i in range(inventory.NUM_CLUSTERS):
 	weights = [(term, JSD[term][i]) for term in JSD.keys()]
 	weights.sort(key=lambda x: x[1], reverse=True)
-	important_words[i] = weights[:inventory.NUM_TOP_1gram]
+	important_words[i] = weights[:inventory.NUM_TOP_WORDS]
 
 pickle.dump(important_words, open('important_words.pkl', 'wb'))
