@@ -29,6 +29,13 @@ Counter({'alt.atheism': 799,
          'talk.politics.misc': 775,
          'talk.religion.misc': 628})
 
+Comp = 4891
+Rec = 3979
+Sci = 3952
+Misc = 975
+Talk.politics = 2625
+Remaining(atheism) = 2424
+
 my run: Counter({0: 11107, 4: 2159, 5: 2124, 2: 1466, 1: 1280, 3: 710})
 
 test run: Counter({3: 10554, 0: 2818, 2: 2118, 1: 1393, 4: 1089, 5: 874}) 

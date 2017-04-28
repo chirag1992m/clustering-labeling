@@ -12,6 +12,7 @@ from scipy import sparse
 import string, nltk
 from math import log
 from bs4 import BeautifulSoup
+from nltk.tokenize import RegexpTokenizer
 
 TF = {}
 IDF = {}
@@ -20,22 +21,23 @@ doc_labeling = []
 all_text = []
 
 
-punctuation = string.punctuation
+punctuation = "".join(string.punctuation)
+tokenizer = RegexpTokenizer(r'[A-Za-z][A-Za-z]+')
 stop_words = nltk.corpus.stopwords.words('english')
 UGLY_TEXT_MAP = dict([(ord(char), None) for char in '[]{}'] + [(ord(char), ' ') for char in '|=*\\#'])
 
 link = 'http://qwone.com/~jason/20Newsgroups/20news-bydate.tar.gz'
 
-with open('downloaded_data', 'wb') as f:
-	f.write(urlopen(link).read())
+# with open('downloaded_data', 'wb') as f:
+# 	f.write(urlopen(link).read())
 
 
-if os.path.exists('temp_data/'):
-	shutil.rmtree('temp_data/')
+# if os.path.exists('temp_data/'):
+# 	shutil.rmtree('temp_data/')
 
-tarfile.open('downloaded_data', "r:gz").extractall(path='temp_data/')
+# tarfile.open('downloaded_data', "r:gz").extractall(path='temp_data/')
 
-os.remove('downloaded_data')
+# os.remove('downloaded_data')
 
 def all_files(path):
 	fl = []
@@ -61,10 +63,12 @@ def clean_text(text):
 	return text
 
 def text_vector(textdata):
-	textdata = clean_text(textdata)
-	vec = [word.lower() for word in nltk.word_tokenize(textdata)]
-	vec = [i.strip("".join(punctuation)) for i in vec]
+	# textdata = clean_text(textdata)
+	# vec = [word.lower() for word in nltk.word_tokenize(textdata)]
+	# vec = [i.strip(punctuation) for i in vec]
+	vec = tokenizer.tokenize(textdata.lower())
 	vec = [i for i in vec if i and i not in stop_words]
+	# print(vec)
 	return vec
 
 
@@ -75,7 +79,7 @@ def add_file(filepath, idx):
 		all_text.append(textdata)
 		tv = text_vector(textdata)
 
-		total_len = float(len(tv)) #Normalizing text length
+		total_len = 1#float(len(tv)) #Normalizing text length
 		for word in tv:
 			if word not in TF:
 				TF[word] = {}
@@ -100,5 +104,5 @@ gen_indexes(files)
 pickle.dump({'tf': TF, 'idf': IDF, 'labels': doc_labeling, 'doc_count': doc_count}, open('indexes.pkl', 'wb'))
 pickle.dump(all_text, open('all_text.pkl', 'wb'))
 
-if os.path.exists('temp_data/'):
-	shutil.rmtree('temp_data/')
+# if os.path.exists('temp_data/'):
+# 	shutil.rmtree('temp_data/')

@@ -9,7 +9,6 @@ def extractLabels(input_terms):
     output_terms = []
     for term in input_terms:
         print(term)
-        scores = []
         doc_list = wikipedia.search(term)
         if doc_list == []:
             continue
@@ -18,7 +17,8 @@ def extractLabels(input_terms):
                 doc_page = wikipedia.page(doc)
                 title = doc_page.title
                 categories = doc_page.categories
-                labels = [(title, calc_score(idx))].extend([(cat, calc_score(idx)) for cat in categories if len(cat.split()) < 5])
+                labels = [(title, calc_score(idx))]
+                labels.extend([(cat, calc_score(idx)) for cat in categories if len(cat.split()) < 4])
                 output_terms.append(labels)
             # check this error
             except wikipedia.exceptions.DisambiguationError:

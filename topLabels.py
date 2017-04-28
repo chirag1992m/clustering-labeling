@@ -44,11 +44,11 @@ def MI(impt_input, candt_input, output_file):
 
 
 def SP(candt_input, output_file):
-    with open(candt_input) as f:
+    with open(candt_input, 'rb') as f:
         cand_terms = pickle.load(f)
 
     label_set = set()
-    for term_list in candt_input:
+    for term_list in cand_terms:
         for term in term_list:
             label_set.add(term[0])
 
@@ -87,9 +87,12 @@ def SP(candt_input, output_file):
         for kword in kwords:
             sp[term] += kw[kword]
 
-    sp = sorted(sp.items(), key=operator.itemgetter(1))
-    topk = sp[:inventroy.K]
+    sp = sorted(sp.items(), key=operator.itemgetter(1), reverse=True)
+    topk = sp[:inventory.K]
     labels = [label[0] for label in topk]
     with open(output_file, "wb") as f:
         pickle.dump(labels, f)
 
+if __name__ == "__main__":
+    for i in range(inventory.NUM_CLUSTERS):
+        SP('labels_words_{}.pkl'.format(i), 'topK_SP_{}.pkl'.format(i))
