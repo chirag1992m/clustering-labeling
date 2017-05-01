@@ -3,6 +3,11 @@
 *.in
 *.pkl
 data/*
+*.tar.gz
+20news/*
+
+#Intermediate files
+intermediate_results/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

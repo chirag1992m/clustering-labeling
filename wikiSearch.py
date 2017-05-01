@@ -1,27 +1,31 @@
 import wikipedia
 import pickle
-import inventory
 
-def calc_score(idx):
-    return (inventory.MAX_DOCS - idx)/(inventory.MAX_DOCS + 1)
+def calc_score(options, idx):
+    return (options.num_wiki_results - idx)/(options.num_wiki_results + 1)
 
-def extractLabels(input_terms):
+'''
+TODO: Only the first title of the term was taken into consideration.
+All titles used currently.
+All categories of the page are added.
+'''
+def extractCandidateLabels(options, input_terms):
     output_terms = []
     for term in input_terms:
-        print(term)
+        # print(term)
         doc_list = wikipedia.search(term)
         if doc_list == []:
             continue
-        for idx, doc in enumerate(doc_list[:inventory.MAX_DOCS]):
+        for idx, doc in enumerate(doc_list[:options.num_wiki_results]):
             try:
                 doc_page = wikipedia.page(doc)
                 title = doc_page.title
                 categories = doc_page.categories
                 if len(title.split()) < 4:
-                    labels = [(title, calc_score(idx))]
+                    labels = [(title, calc_score(options, idx))]
                 else:
                     labels = []
-                labels.extend([(cat, calc_score(idx)) for cat in categories if len(cat.split()) < 4])
+                labels.extend([(cat, calc_score(options, idx)) for cat in categories if len(cat.split()) < 4])
                 output_terms.append(labels)
             # check this error
             except wikipedia.exceptions.DisambiguationError:
@@ -29,16 +33,3 @@ def extractLabels(input_terms):
             except wikipedia.exceptions.PageError:
                 pass
     return output_terms
-
-imp_terms = pickle.load(open('important_words.pkl', 'rb'))
-
-for i in range(inventory.NUM_CLUSTERS):
-    top_imp_terms = [x[0] for x in imp_terms[i][:inventory.NUM_TOP_WORDS]]
-    print(top_imp_terms)
-    pickle.dump(extractLabels(top_imp_terms), open('labels_words_{}.pkl'.format(i), 'wb'))
-
-'''
-TODO: Only the first title of the term was taken into consideration.
-All titles used currently.
-All categories of the page are added.
-'''

@@ -1,9 +1,8 @@
 import math
 import pickle
 import operator
-import inventory
 
-ngrams = pickle.load(open('ngrams_brown.pkl', 'rb'))
+ngrams = pickle.load(open('data_supplements/ngrams_brown.pkl', 'rb'))
 
 def getCount(word):
     gram = len(word.split())
@@ -13,7 +12,7 @@ def getCount(word):
         return 1
 
 
-def MI(terms, candt_input, output_file):
+def MI(terms, candt_input, output_file, K):
     imp_terms = [term[0] for term in terms]
     scores = [term[1] for term in terms]
 
@@ -34,14 +33,14 @@ def MI(terms, candt_input, output_file):
                     mi[label[0]] += (pmi * scores[idx])
 
     mi = sorted(mi.items(), key=operator.itemgetter(1))
-    topk = mi[:inventory.K]
+    topk = mi[:K]
     labels = [label[0] for label in topk]
 
     with open(output_file, "wb") as f:
         pickle.dump(labels, f)
 
 
-def SP(candt_input, output_file):
+def SP(candt_input, output_file, K):
     with open(candt_input, 'rb') as f:
         cand_terms = pickle.load(f)
 
@@ -86,11 +85,7 @@ def SP(candt_input, output_file):
             sp[term] += kw[kword]
 
     sp = sorted(sp.items(), key=operator.itemgetter(1), reverse=True)
-    topk = sp[:inventory.K]
+    topk = sp[:K]
     labels = [label[0] for label in topk]
     with open(output_file, "wb") as f:
         pickle.dump(labels, f)
-
-if __name__ == "__main__":
-    for i in range(inventory.NUM_CLUSTERS):
-        MI(pickle.load(open('important_words.pkl', 'rb'))[i], 'labels_words_{}.pkl'.format(i), 'topK_MI_{}.pkl'.format(i))
