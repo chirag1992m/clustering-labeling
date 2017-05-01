@@ -20,10 +20,13 @@ doc_count = 0
 doc_labeling = []
 all_text = []
 
+def get_stop_words():
+    with open('stop_words_250.txt', 'r') as f:
+        return [x.strip() for x in f.readlines()]
 
 punctuation = "".join(string.punctuation)
 tokenizer = RegexpTokenizer(r'[A-Za-z]\w+')
-stop_words = nltk.corpus.stopwords.words('english')
+stop_words = nltk.corpus.stopwords.words('english') + get_stop_words()
 UGLY_TEXT_MAP = dict([(ord(char), None) for char in '[]{}'] + [(ord(char), ' ') for char in '|=*\\#'])
 
 link = 'http://qwone.com/~jason/20Newsgroups/20news-bydate.tar.gz'
@@ -101,7 +104,8 @@ files = all_files('temp_data')
 
 gen_indexes(files)
 
-pickle.dump({'tf': TF, 'idf': IDF, 'labels': doc_labeling, 'doc_count': doc_count}, open('indexes.pkl', 'wb'))
+pickle.dump(doc_labeling, open('doc_labels.pkl', 'wb'))
+pickle.dump({'tf': TF, 'idf': IDF, 'doc_count': doc_count}, open('indexes.pkl', 'wb'))
 pickle.dump(all_text, open('all_text.pkl', 'wb'))
 
 # if os.path.exists('temp_data/'):
