@@ -14,8 +14,8 @@ def naive_weighing(options, X, cluster, indexes):
 
 	labels = []
 	for i in range(X.shape[0]):
-		labels.extend(cluster.predict(X[i]))
-	cluster_counts = Counter(labels)
+		labels.append(np.array(cluster.predict(X[i])))
+	cluster_counts = Counter([item for sublist in labels for item in sublist])
 	print(cluster_counts)
 
 	for term in indexes['idf'].keys():
@@ -25,7 +25,7 @@ def naive_weighing(options, X, cluster, indexes):
 
 		term_cluster_weights[term] = {}
 		for cluster_id in range(options.num_clusters):
-			tf_cluster = [indexes['tf'][term][t] for t in indexes['tf'][term].keys() if cluster_id in np.array(cluster.predict(X[t]))]
+			tf_cluster = [indexes['tf'][term][t] for t in indexes['tf'][term].keys() if cluster_id in labels[t]]
 			ctf = sum(tf_cluster) / float(cluster_counts[cluster_id])
 			cdf = math.log(1 + sum([1 for i in tf_cluster]))
 

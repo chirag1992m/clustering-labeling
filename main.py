@@ -51,9 +51,9 @@ print("Clustering DONE!")
 
 print("Extracting important terms...")
 if options.important_terms == 'naive':
-    weights = impTermExtraction.naive_weighing(options, cluster, indexes)
+    weights = impTermExtraction.naive_weighing(options, X, cluster, indexes)
 elif options.important_terms == 'JSD':
-    weights = impTermExtraction.JSD(options, cluster, indexes)
+    weights = impTermExtraction.JSD(options, X, cluster, indexes)
 important_terms = impTermExtraction.get_important_terms(options, weights['weighed_terms'])
 print("extracting important terms DONE!")
 
