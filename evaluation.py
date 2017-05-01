@@ -32,7 +32,7 @@ def accuracy(truth_file, pred_path, K):
                             clust_sum += model.similarity(true_label, pred_label)
                         except KeyError:
                             pass
-                clust_list.append(([pred_string, true_list], clust_sum))
+                clust_list.append(([pred_string, '.'.join(true_list)], clust_sum))
         clust_sum_sorted = sorted(clust_list, key=operator.itemgetter(1), reverse=True)
         print(clust_sum_sorted[:K])
 

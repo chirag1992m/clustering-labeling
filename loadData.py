@@ -13,7 +13,7 @@ from math import log
 from nltk.tokenize import RegexpTokenizer
 
 def get_stop_words():
-    with open('data_supplements/stop_words_250.txt', 'r') as f:
+    with open('data_supplements/stop_words_1000.txt', 'r') as f:
         return [x.strip() for x in f.readlines()]
 
 tokenizer = RegexpTokenizer(r'[A-Za-z][A-Za-z]+')

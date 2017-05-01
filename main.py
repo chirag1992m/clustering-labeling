@@ -13,7 +13,7 @@ import wikiSearch, ngram_gen
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str, default='20newsgroup', choices=['20newsgroup',])
-parser.add_argument("--clustering", type=str, default='kmeans', choices=['kmeans',])
+parser.add_argument("--clustering", type=str, default='kmeans', choices=['kmeans', 'gmm'])
 parser.add_argument("--important_terms", type=str, default='JSD', choices=['JSD','naive'])
 parser.add_argument("--no_wiki_search", action="store_true")
 parser.add_argument("--judge", type=str, default="PMI", choices=['PMI', 'SP',])
@@ -45,6 +45,8 @@ print("Loading and preprocessing of dataset DONE!")
 print("Clustering documents...")
 if options.clustering == 'kmeans':
     X, cluster = cluster.kmeans_clustering(options, all_text)
+elif options.clustering == 'gmm':
+    X, cluster = cluster.gmm_clustering(options, all_text)
 print("Clustering DONE!")
 
 print("Extracting important terms...")

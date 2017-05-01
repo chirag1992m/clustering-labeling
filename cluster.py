@@ -6,7 +6,7 @@ File: cluster.py
 Job: Contains clustering methods
 '''
 import pickle
-from sklearn import cluster, preprocessing
+from sklearn import cluster, preprocessing, mixture
 from collections import Counter
 from sklearn.feature_extraction.text import *
 
@@ -21,3 +21,15 @@ def kmeans_clustering(options, all_text):
 		pickle.dump(X, open('intermediate_results/cluster_tfidf.pkl', 'wb'))
 
 	return X, kmeans
+
+def gmm_clustering(optionsm, all_text):
+	print("Running K-Means clustering...")
+	X = TfidfVectorizer(max_df=0.5, max_features=10000, min_df=3, use_idf=True).fit_transform(all_text)
+	gmm = mixture.GaussianMixture(n_components=options.num_clusters, verbose=1).fit(X)	
+	print("Converged: ", gmm.converged_)
+	
+	if options.save_intermediate:
+		pickle.dump(gmm, open('intermediate_results/cluster_gmm.pkl', 'wb'))
+		pickle.dump(X, open('intermediate_results/cluster_tfidf.pkl', 'wb'))
+
+	return X, gmm
