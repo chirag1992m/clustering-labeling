@@ -6,7 +6,7 @@ File: main.py
 Job: Coordinate between the different components to run
 different experiments
 '''
-import argparse, os, shutil
+import argparse, os, shutil, pickle
 
 import loadData, cluster, impTermExtraction
 import wikiSearch, ngram_gen
