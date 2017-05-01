@@ -12,25 +12,24 @@ def getCount(word):
         return 1
 
 
-def MI(terms, candt_input, output_file, K):
+def MI(terms, termlist, output_file, K):
     imp_terms = [term[0] for term in terms]
     scores = [term[1] for term in terms]
 
     scores = [float(i) / max(scores) for i in scores]
 
     mi = {}
-    with open(candt_input, 'rb') as f:
-        termlist = pickle.load(f)
-        for terms in termlist:
-            for label in terms:
-                mi[label[0]] = 0
-                for idx, term in enumerate(imp_terms):
-                    search_query = label[0] + " " + term
-                    combined_count = getCount(search_query)
-                    label_count = getCount(label[0])
-                    term_count = getCount(term)
-                    pmi = math.log(((combined_count + 1)/ label_count) / (term_count + 2), 10)
-                    mi[label[0]] += (pmi * scores[idx])
+
+    for terms in termlist:
+        for label in terms:
+            mi[label[0]] = 0
+            for idx, term in enumerate(imp_terms):
+                search_query = label[0] + " " + term
+                combined_count = getCount(search_query)
+                label_count = getCount(label[0])
+                term_count = getCount(term)
+                pmi = math.log(((combined_count + 1)/ label_count) / (term_count + 2), 10)
+                mi[label[0]] += (pmi * scores[idx])
 
     mi = sorted(mi.items(), key=operator.itemgetter(1))
     topk = mi[:K]
