@@ -14,7 +14,7 @@ def naive_weighing(options, X, cluster, indexes):
 
 	labels = []
 	for i in range(X.shape[0]):
-		labels.append(np.array(cluster.predict(X[i])))
+		labels.append(np.array(cluster.predict(X[i].toarray())))
 	cluster_counts = Counter([item for sublist in labels for item in sublist])
 	print(cluster_counts)
 

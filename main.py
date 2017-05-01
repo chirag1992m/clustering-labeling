@@ -13,7 +13,7 @@ import wikiSearch, ngram_gen
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--dataset", type=str, default='20newsgroup', choices=['20newsgroup',])
-parser.add_argument("-c", "--clustering", type=str, default='kmeans', choices=['kmeans', 'gmm'])
+parser.add_argument("-c", "--clustering", type=str, default='kmeans', choices=['kmeans', 'gmm', 'birch', 'ac'])
 parser.add_argument("-i", "--important_terms", type=str, default='JSD', choices=['JSD','naive'])
 parser.add_argument("-nw", "--no_wiki_search", action="store_true")
 parser.add_argument("-j", "--judge", type=str, default="PMI", choices=['PMI', 'SP',])
@@ -47,6 +47,10 @@ if options.clustering == 'kmeans':
     X, cluster = cluster.kmeans_clustering(options, all_text)
 elif options.clustering == 'gmm':
     X, cluster = cluster.gmm_clustering(options, all_text)
+elif options.clustering == 'birch':
+    X, cluster = cluster.birch_clustering(options, all_text)
+elif options.clustering == 'ac':
+    X, cluster = cluster.ac_clustering(options, all_text)
 print("Clustering DONE!")
 
 print("Extracting important terms...")
