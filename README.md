@@ -1,19 +1,26 @@
 # clustering-labeling
 Search Engine Architecture (NYU CS Spring-17) Project
+**Enhancing Cluster Labeling using Wikipedia**
 
 ## Datasets
 * [20-newsgroup](http://people.csail.mit.edu/jrennie/20Newsgroups/)
-* [RCV-1 and RCV-2](https://archive.ics.uci.edu/ml/datasets/Reuters+RCV1+RCV2+Multilingual,+Multiview+Text+Categorization+Test+collection)
 
-## Pipeline
+## Required Packages
+* wikipedia
+* nltk (+ brown corpora)
+* gensim
 
-TF-IDF --> K-Means clustering --> Candidate Labels (JSD, k-nn) --> Wiki-search --> Candidate Labels++ --> Top Labels (MI, SP) --> Evaluation (Match@K, Mean Reciprocal Rank@K)
+To install the packages, run:
+~~~
+pip install wikipedia
+pip install gensim
+~~~
 
-Other ways to vectorize the data
-Future
-PyPi
-sub-sampling the dataset which is unbiased
-numpy
-word2vec
-
-complete the pipeline and replace the parts to Map-Reduce if possible.    
+## Pipeline Overview
+1. Data download and Pre-process
+2. TF-IDF vetorization 
+3. Clustering (KMeans)
+4. Impoprtant Term Extraction (JSD, Naive term weighting)
+5. Search Wikipedia for the important terms
+6. Judge Candidate labels(Important terms + Wikipedia Labels) using (MI, SP) 
+7. Evaluation using Match@K

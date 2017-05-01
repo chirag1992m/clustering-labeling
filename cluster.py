@@ -7,7 +7,6 @@ Job: Contains clustering methods
 '''
 import pickle
 from sklearn import cluster, preprocessing
-from scipy import sparse
 from collections import Counter
 from sklearn.feature_extraction.text import *
 

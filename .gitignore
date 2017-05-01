@@ -5,6 +5,8 @@
 data/*
 *.tar.gz
 20news/*
+*.bin.gz
+*.bin
 
 #Intermediate files
 intermediate_results/*

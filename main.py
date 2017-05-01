@@ -70,11 +70,11 @@ if not options.no_wiki_search:
 if options.judge == 'PMI':
     print("Judging terms using MI...")
     if not os.path.exists('data_supplements/ngrams_brown.pkl'):
-        print("Brown dataset N-Grams not found, generating them...")
+        print("Brown N-Grams not found, generating them...")
         ngram_gen.generate_brown_ngrams()
         print("Done!")
 
     import topLabels
-    for i in range(inventory.NUM_CLUSTERS):
+    for i in range(options.num_clusters):
         topLabels.MI(important_terms[i], wiki_labels[i], 'evaluations/topK_MI_{}.pkl'.format(i), options.top_K)
     print("Judging done")
