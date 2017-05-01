@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import *
 
 def kmeans_clustering(options, all_text):
 	print("Running K-Means clustering...")
-	X = TfidfVectorizer(max_df=0.5, max_features=10000, min_df=3, use_idf=True).fit_transform(all_text)
+	X = TfidfVectorizer(max_df=0.5, max_features=10000, min_df=3, stop_words='english', use_idf=True).fit_transform(all_text)
 	kmeans = cluster.KMeans(n_clusters=options.num_clusters, verbose=1, init='k-means++').fit(X)	
 	print("Label counts: ", Counter(kmeans.labels_))
 	
@@ -24,7 +24,7 @@ def kmeans_clustering(options, all_text):
 
 def gmm_clustering(optionsm, all_text):
 	print("Running Gaussian Mixture Model...")
-	X = TfidfVectorizer(max_df=0.5, max_features=10000, min_df=3, use_idf=True).fit_transform(all_text)
+	X = TfidfVectorizer(max_df=0.5, max_features=10000, min_df=3, stop_words='english', use_idf=True).fit_transform(all_text)
 	gmm = mixture.GaussianMixture(n_components=options.num_clusters, verbose=1).fit(X)	
 	print("Converged: ", gmm.converged_)
 	

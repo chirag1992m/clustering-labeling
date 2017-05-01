@@ -12,19 +12,19 @@ import loadData, cluster, impTermExtraction
 import wikiSearch, ngram_gen
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--dataset", type=str, default='20newsgroup', choices=['20newsgroup',])
-parser.add_argument("--clustering", type=str, default='kmeans', choices=['kmeans', 'gmm'])
-parser.add_argument("--important_terms", type=str, default='JSD', choices=['JSD','naive'])
-parser.add_argument("--no_wiki_search", action="store_true")
-parser.add_argument("--judge", type=str, default="PMI", choices=['PMI', 'SP',])
+parser.add_argument("-d", "--dataset", type=str, default='20newsgroup', choices=['20newsgroup',])
+parser.add_argument("-c", "--clustering", type=str, default='kmeans', choices=['kmeans', 'gmm'])
+parser.add_argument("-i", "--important_terms", type=str, default='JSD', choices=['JSD','naive'])
+parser.add_argument("-nw", "--no_wiki_search", action="store_true")
+parser.add_argument("-j", "--judge", type=str, default="PMI", choices=['PMI', 'SP',])
 
-parser.add_argument("--num_clusters", type=int, default=5)
-parser.add_argument("--num_important_words", type=int, default=10)
-parser.add_argument("--top_K", type=int, default=5)
+parser.add_argument("-nc", "--num_clusters", type=int, default=5)
+parser.add_argument("-ni", "--num_important_words", type=int, default=10)
+parser.add_argument("-K", "--top_K", type=int, default=5)
 parser.add_argument("--num_wiki_results", type=int, default=10)
 
-parser.add_argument("--clean_data", action="store_true")
-parser.add_argument("--save_intermediate", action="store_true")
+parser.add_argument("-clean", "--clean_data", action="store_true")
+parser.add_argument("-s", "--save_intermediate", action="store_true")
 
 options = parser.parse_args()
 
