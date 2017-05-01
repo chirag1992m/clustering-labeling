@@ -8,9 +8,9 @@ ngrams = pickle.load(open('ngrams_brown.pkl', 'rb'))
 def getCount(word):
     gram = len(word.split())
     if word in ngrams[gram]:
-        return ngrams[gram][word]
+        return ngrams[gram][word] / ngrams[str(gram)+"_count"]
     else:
-        return 1.1
+        return 1
 
 
 def MI(terms, candt_input, output_file):
@@ -30,10 +30,10 @@ def MI(terms, candt_input, output_file):
                     combined_count = getCount(search_query)
                     label_count = getCount(label[0])
                     term_count = getCount(term)
-                    pmi = math.log((combined_count / label_count) / term_count, 10)
+                    pmi = math.log(((combined_count + 1)/ label_count) / (term_count + 2), 10)
                     mi[label[0]] += (pmi * scores[idx])
 
-    mi = sorted(mi.items(), key=operator.itemgetter(1), reverse=True)
+    mi = sorted(mi.items(), key=operator.itemgetter(1))
     topk = mi[:inventory.K]
     labels = [label[0] for label in topk]
 

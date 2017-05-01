@@ -22,7 +22,7 @@ all_text = []
 
 
 punctuation = "".join(string.punctuation)
-tokenizer = RegexpTokenizer(r'[A-Za-z][A-Za-z]+')
+tokenizer = RegexpTokenizer(r'[A-Za-z]\w+')
 stop_words = nltk.corpus.stopwords.words('english')
 UGLY_TEXT_MAP = dict([(ord(char), None) for char in '[]{}'] + [(ord(char), ' ') for char in '|=*\\#'])
 
@@ -76,8 +76,8 @@ def add_file(filepath, idx):
 	doc_labeling.append(filepath)
 	with open(filepath, 'rb') as f:
 		textdata = f.read().decode('latin-1')
-		all_text.append(textdata)
 		tv = text_vector(textdata)
+		all_text.append(tv)
 
 		total_len = 1#float(len(tv)) #Normalizing text length
 		for word in tv:
