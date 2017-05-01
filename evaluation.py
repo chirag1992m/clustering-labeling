@@ -6,19 +6,13 @@ import operator
 model = gensim.models.KeyedVectors.load_word2vec_format(
     'GoogleNews-vectors-negative300.bin', binary=True)
 
-def accuracy(truth_file, pred_path, K):
+def accuracy(truth_file, pred_labels, K):
     with open(truth_file, 'rb') as f:
         true_labels = pickle.load(f)
 
     label_list = []
     for label in true_labels:
         label_list.append(label.split('.'))
-
-    pred_labels = []
-    pred_files = os.listdir(pred_path)
-    for pfile in pred_files:
-        with open(pred_path + pfile, 'rb') as f:
-            pred_labels.append(pickle.load(f))
 
     for pred_list in pred_labels:
         clust_list = []
