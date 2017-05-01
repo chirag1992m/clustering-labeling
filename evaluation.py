@@ -6,10 +6,7 @@ import operator
 model = gensim.models.KeyedVectors.load_word2vec_format(
     'GoogleNews-vectors-negative300.bin', binary=True)
 
-def accuracy(truth_file, pred_labels, K):
-    with open(truth_file, 'rb') as f:
-        true_labels = pickle.load(f)
-
+def accuracy(true_labels, pred_labels, K):
     label_list = []
     for label in true_labels:
         label_list.append(label.split('.'))
@@ -31,4 +28,12 @@ def accuracy(truth_file, pred_labels, K):
         print(clust_sum_sorted[:K])
 
 if __name__ == "__main__":
-    accuracy('intermediate_results/unique_labels.pkl', 'evaluations/', 5)
+    true_labels = pickle.load(open('intermediate_results/unique_labels.pkl', 'rb'))
+    important_terms = pickle.load(open('intermediate_results/important_words.pkl', 'rb'))
+    pred_labels = []
+    for idx, f in enumerate(os.listdir('evaluations')):
+        df = os.path.join('evaluations', f)
+        pred_labels.append(pickle.load(open(df, 'rb')))
+        pred_labels[idx].extend([t[0] for t in important_terms[idx]])
+
+    accuracy(true_labels, pred_labels, 5)

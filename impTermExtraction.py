@@ -5,14 +5,18 @@ Project: Cluster-Labeling
 File: candidateLabelExtraction.py
 Job: Extracting representative labels of clusters
 '''
-import pickle, math
+import pickle, math, numpy as np
 from collections import Counter
 
-def naive_weighing(options, cluster, indexes):
+def naive_weighing(options, X, cluster, indexes):
 	term_cluster_weights = {}
 	term_collection_weights = {}
 
-	cluster_counts = Counter(cluster.labels_)
+	labels = []
+	for i in range(X.shape[0]):
+		labels.extend(cluster.predict(X[i]))
+	cluster_counts = Counter(labels)
+	print(cluster_counts)
 
 	for term in indexes['idf'].keys():
 		term_collection_weights[term] = {}
@@ -21,7 +25,7 @@ def naive_weighing(options, cluster, indexes):
 
 		term_cluster_weights[term] = {}
 		for cluster_id in range(options.num_clusters):
-			tf_cluster = [indexes['tf'][term][t] for t in indexes['tf'][term].keys() if cluster.labels_[t] == cluster_id]
+			tf_cluster = [indexes['tf'][term][t] for t in indexes['tf'][term].keys() if cluster_id in np.array(cluster.predict(X[t]))]
 			ctf = sum(tf_cluster) / float(cluster_counts[cluster_id])
 			cdf = math.log(1 + sum([1 for i in tf_cluster]))
 
@@ -36,8 +40,8 @@ def naive_weighing(options, cluster, indexes):
 	return {'weighed_terms': term_cluster_weights, 'collection_weights': term_collection_weights}
 
 
-def JSD(options, cluster, indexes):
-	naive_weights = naive_weighing(options, cluster, indexes)
+def JSD(options, X, cluster, indexes):
+	naive_weights = naive_weighing(options, X, cluster, indexes)
 	cluster_weights = naive_weights['weighed_terms']
 	collection_weights = naive_weights['collection_weights']
 
