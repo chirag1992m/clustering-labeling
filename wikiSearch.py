@@ -4,11 +4,6 @@ import pickle
 def calc_score(options, idx):
     return (options.num_wiki_results - idx)/(options.num_wiki_results + 1)
 
-'''
-TODO: Only the first title of the term was taken into consideration.
-All titles used currently.
-All categories of the page are added.
-'''
 def extractCandidateLabels(options, input_terms):
     output_terms = []
     for term in input_terms:
@@ -26,7 +21,8 @@ def extractCandidateLabels(options, input_terms):
                 else:
                     labels = []
                 labels.extend([(cat, calc_score(options, idx)) for cat in categories if len(cat.split()) < 4])
-                output_terms.append(labels)
+                if len(labels) > 0:
+                    output_terms.append(labels)
             # check this error
             except wikipedia.exceptions.DisambiguationError:
                 pass

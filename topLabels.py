@@ -39,10 +39,7 @@ def MI(terms, termlist, output_file, K):
         pickle.dump(labels, f)
 
 
-def SP(candt_input, output_file, K):
-    with open(candt_input, 'rb') as f:
-        cand_terms = pickle.load(f)
-
+def SP(cand_terms, output_file, K):
     label_set = set()
     for term_list in cand_terms:
         for term in term_list:
