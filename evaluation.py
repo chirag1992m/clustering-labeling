@@ -21,8 +21,8 @@ def accuracy(truth_file, pred_path, K):
             pred_labels.append(pickle.load(f))
 
     for pred_list in pred_labels:
+        clust_list = []
         for true_list in label_list:
-            clust_list = []
             for pred_string in pred_list:
                 clust_sum = 0
                 pred_strings = pred_string.split()
@@ -32,7 +32,7 @@ def accuracy(truth_file, pred_path, K):
                             clust_sum += model.similarity(true_label, pred_label)
                         except KeyError:
                             pass
-                clust_list.append(([pred_list, true_list], clust_sum))
+                clust_list.append(([pred_string, true_list], clust_sum))
         clust_sum_sorted = sorted(clust_list, key=operator.itemgetter(1), reverse=True)
         print(clust_sum_sorted[:K])
 
