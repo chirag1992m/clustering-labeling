@@ -5,7 +5,7 @@ Project: Cluster-Labeling
 File: candidateLabelExtraction.py
 Job: Extracting representative labels of clusters
 '''
-import pickle, math, numpy as np
+import pickle, math, numpy as np, os
 from collections import Counter
 
 def naive_weighing(options, X, cluster, indexes):
@@ -13,8 +13,12 @@ def naive_weighing(options, X, cluster, indexes):
 	term_collection_weights = {}
 
 	labels = []
-	for i in range(X.shape[0]):
-		labels.append(np.array(cluster.predict(X[i].toarray())))
+	if hasattr(cluster, 'labels_'):
+		for i in range(X.shape[0]):
+			labels.append([cluster.labels_[i]])
+	else:
+		for i in range(X.shape[0]):
+			labels.append(np.array(cluster.predict(X[i].toarray())))
 	cluster_counts = Counter([item for sublist in labels for item in sublist])
 	print(cluster_counts)
 
@@ -35,7 +39,7 @@ def naive_weighing(options, X, cluster, indexes):
 
 	if options.save_intermediate:
 		pickle.dump({'weighed_terms': term_cluster_weights, 'collection_weights': term_collection_weights}, 
-				open('intermediate_results/term_weights_naive.pkl', 'wb'))
+				open(os.path.join(options.intermediate_out_directory, 'term_weights_naive.pkl'), 'wb'))
 
 	return {'weighed_terms': term_cluster_weights, 'collection_weights': term_collection_weights}
 
@@ -63,7 +67,7 @@ def JSD(options, X, cluster, indexes):
 
 	if options.save_intermediate:
 		pickle.dump({'weighed_terms': JSD}, 
-				open('intermediate_results/term_weights_JSD.pkl', 'wb'))
+				open(os.path.join(options.intermediate_out_directory, 'term_weights_JSD.pkl'), 'wb'))
 
 	return {'weighed_terms': JSD}
 
@@ -75,6 +79,6 @@ def get_important_terms(options, weighed_terms):
 		important_words[i] = weights[:options.num_important_words]
 
 	if options.save_intermediate:
-		pickle.dump(important_words, open('intermediate_results/important_words.pkl', 'wb'))
+		pickle.dump(important_words, open(os.path.join(options.intermediate_out_directory, 'important_words.pkl'), 'wb'))
 
 	return important_words

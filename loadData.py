@@ -85,10 +85,10 @@ def load_20_newsgroup(options):
     indexes, labels, all_text = gen_indexes_20_news(files)
 
     if options.save_intermediate:
-        pickle.dump(labels, open('intermediate_results/doc_labels.pkl', 'wb'))
-        pickle.dump(indexes, open('intermediate_results/indexes.pkl', 'wb'))
-        pickle.dump(all_text, open('intermediate_results/all_text.pkl', 'wb'))
-        pickle.dump(set(labels), open('intermediate_results/unique_labels.pkl', 'wb'))
+        pickle.dump(labels, open(os.path.join(options.intermediate_out_directory, 'doc_labels.pkl'), 'wb'))
+        pickle.dump(indexes, open(os.path.join(options.intermediate_out_directory, 'indexes.pkl'), 'wb'))
+        pickle.dump(all_text, open(os.path.join(options.intermediate_out_directory, '/all_text.pkl'), 'wb'))
+        pickle.dump(set(labels), open(os.path.join(options.intermediate_out_directory, '/unique_labels.pkl'), 'wb'))
 
     if options.clean_data:
         clean_20_newsgroup()

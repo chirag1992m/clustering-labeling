@@ -28,11 +28,11 @@ def accuracy(true_labels, pred_labels, K):
         print(clust_sum_sorted[:K])
 
 if __name__ == "__main__":
-    true_labels = pickle.load(open('intermediate_results/unique_labels.pkl', 'rb'))
-    important_terms = pickle.load(open('intermediate_results/important_words.pkl', 'rb'))
+    true_labels = pickle.load(open(os.path.join(options.intermediate_out_directory, 'unique_labels.pkl'), 'rb'))
+    important_terms = pickle.load(open(os.path.join(options.intermediate_out_directory, 'important_words.pkl'), 'rb'))
     pred_labels = []
-    for idx, f in enumerate(os.listdir('evaluations')):
-        df = os.path.join('evaluations', f)
+    for idx, f in enumerate(os.listdir(options.out_directory)):
+        df = os.path.join(options.out_directory, f)
         pred_labels.append(pickle.load(open(df, 'rb')))
         pred_labels[idx].extend([t[0] for t in important_terms[idx]])
 

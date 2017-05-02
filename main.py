@@ -19,23 +19,25 @@ parser.add_argument("-nw", "--no_wiki_search", action="store_true")
 parser.add_argument("-j", "--judge", type=str, default="PMI", choices=['PMI', 'SP',])
 
 parser.add_argument("-nc", "--num_clusters", type=int, default=5)
-parser.add_argument("-ni", "--num_important_words", type=int, default=10)
-parser.add_argument("-K", "--top_K", type=int, default=5)
-parser.add_argument("--num_wiki_results", type=int, default=10)
+parser.add_argument("-ni", "--num_important_words", type=int, default=20)
+parser.add_argument("-K", "--top_K", type=int, default=20)
+parser.add_argument("--num_wiki_results", type=int, default=15)
 
 parser.add_argument("-clean", "--clean_data", action="store_true")
 parser.add_argument("-s", "--save_intermediate", action="store_true")
+parser.add_argument("-o", "--out_directory", type=str, default="evaluations")
+parser.add_argument("-io", "--intermediate_out_directory", type=str, default="intermediate_results")
 
 options = parser.parse_args()
 
 if options.save_intermediate:
-    if not os.path.exists('intermediate_results/'):
-        os.mkdir('intermediate_results')
+    if not os.path.exists(options.intermediate_out_directory):
+        os.mkdir(options.intermediate_out_directory)
 
-if os.path.exists('evaluations/'):
-   shutil.rmtree('evaluations/')
+if os.path.exists(options.out_directory):
+   shutil.rmtree(options.out_directory)
 
-os.mkdir('evaluations')
+os.mkdir(options.out_directory)
 
 print("Loading and preprocessing dataset... ")
 if options.dataset == '20newsgroup':
@@ -70,7 +72,7 @@ if not options.no_wiki_search:
         wiki_labels.append(wikiSearch.extractCandidateLabels(options, top_imp_terms))
 
     if options.save_intermediate:
-        pickle.dump(wiki_labels, open('intermediate_results/wiki_labels.pkl', 'wb'))
+        pickle.dump(wiki_labels, open(os.path.join(options.intermediate_out_directory, 'wiki_labels.pkl'), 'wb'))
     print("Wiki Search DONE!")
 
 if options.judge == 'PMI':
@@ -82,11 +84,11 @@ if options.judge == 'PMI':
 
     import topLabels
     for i in range(options.num_clusters):
-        topLabels.MI(important_terms[i], wiki_labels[i], 'evaluations/topK_MI_{}.pkl'.format(i), options.top_K)
+        topLabels.MI(important_terms[i], wiki_labels[i], os.path.join(options.out_directory, 'topK_MI_{}.pkl'.format(i)), options.top_K)
     print("Judging done")
 elif options.judge == 'SP':
     print("Judging terms using SP...")
     import topLabels
     for i in range(options.num_clusters):
-        topLabels.SP(wiki_labels[i], 'evaluations/topK_SP_{}.pkl'.format(i), options.top_K)
+        topLabels.SP(wiki_labels[i], os.path.join(options.out_directory, 'topK_SP_{}.pkl'.format(i)), options.top_K)
     print("Judging done")
