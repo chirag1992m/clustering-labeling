@@ -1,3 +1,10 @@
+'''
+Course: Search Engine Architecture
+Project: Cluster-Labeling
+
+File: ngram_gen.py
+Job: Generate Brown Corpora N-Grams
+'''
 import nltk
 from nltk import word_tokenize
 from nltk.util import ngrams

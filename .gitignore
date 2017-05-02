@@ -7,6 +7,7 @@ data/*
 20news/*
 *.bin.gz
 *.bin
+eval*/*.txt
 
 #Intermediate files
 intermediate_results/*

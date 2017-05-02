@@ -35,8 +35,8 @@ def MI(terms, termlist, output_file, K):
     topk = mi[:K]
     labels = [label[0] for label in topk]
 
-    with open(output_file, "wb") as f:
-        pickle.dump(labels, f)
+    with open(output_file, "w") as f:
+        f.write('\n'.join(labels))
 
 
 def SP(cand_terms, output_file, K):
@@ -83,5 +83,5 @@ def SP(cand_terms, output_file, K):
     sp = sorted(sp.items(), key=operator.itemgetter(1), reverse=True)
     topk = sp[:K]
     labels = [label[0] for label in topk]
-    with open(output_file, "wb") as f:
-        pickle.dump(labels, f)
+    with open(output_file, "w") as f:
+        f.write('\n'.join(labels))
