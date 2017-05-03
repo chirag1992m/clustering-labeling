@@ -1,7 +1,7 @@
 # Cluster Labeling
 ### Enhancing Cluster Labeling using Wikipedia
 ### Search Engine Architecture (NYU CS Spring-17) Project
-#### [Report](), [Slides]()
+#### [Report](reports/Report.pdf), [Slides](reports/Slides.pptx)
 
 ## Datasets
 * [20-newsgroup](http://people.csail.mit.edu/jrennie/20Newsgroups/)
